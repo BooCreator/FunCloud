@@ -1,0 +1,44 @@
+﻿@model FunCloud.Comment.CommentPublicModel
+
+@using FunCloud.Helpers
+
+@{
+    FunCloud.View.WorkView Work = this.ViewBag.Item;
+    int UserID = this.ViewBag.UserID;
+}
+
+@{
+    List<FunCloud.View.CommentView> Items = this.ViewBag.Comments;
+    Html.RenderPartial("Comment/_CommentView", Items);
+}
+
+@{ Html.RenderPartial("_Pagination"); }
+
+@using (Html.BeginForm("Public", "Comment", FormMethod.Post, new { id = "comment_form" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <div class="card" style="width: 100%;">
+        <div class="card-body">
+            <h5 id="title" class="card-title">Оставить комментарий</h5>
+
+            @Html.Hidden("Work", Work.ID)
+
+            @Html.Hidden("Author", UserID)
+
+            @Html.Hidden("Answer", -1)
+
+            <div class="form-group">
+                <div>
+                    <textarea class="form-control" id="Text" name="Text" rows="4"></textarea>
+                    @Html.ValidationMessageFor(model => model.Text)
+                </div>
+            </div>
+
+            <div class="submissive">
+                @Html.CreateButton("Опубликовать", "javascript:post_form('/Comment/Public/','comment_form')")
+            </div>
+        </div>
+    </div>
+}

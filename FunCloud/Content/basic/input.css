@@ -1,0 +1,75 @@
+/* basic */
+.content .item .line.files form {
+  display: none;
+}
+
+/* content */
+.line.description.addtocollection form {
+  margin: 0 4px;
+}
+.line.description.addtocollection form select {
+  min-width: 120px;
+  text-align: left;
+  background-color: #f6ecda;
+  border-style: none;
+  outline: 0;
+  outline-offset: 0;
+  transition-duration: 0.2s;
+}
+
+.line.description.addtocollection form select:hover {
+  background-color: #e0cca9;
+  border-radius: 4px;
+}
+
+/* profile */
+
+/* work */
+
+/* public */
+.work .title input::placeholder {
+  color: white;
+}
+.work .title  input:focus,
+.work .description  input:focus {
+  box-shadow: 0 0 6px rgba(139,69,19);
+}
+
+.work .description textarea {
+  width: 100%;
+  height: 200px;
+  background-color: #f6ecda;
+  border-style: none;
+  outline: none;
+  transition-duration: 0.3s;
+  text-align: justify;
+  color: #a26a42;
+  resize: none;
+}
+
+.work .description textarea::placeholder {
+  color: #a26a42;
+}
+
+/* reading */
+.work.editor .line input {
+  width: 100%;
+}
+
+/* comments */
+.comments .item .text textarea {
+  width: 100%;
+  height: 200px;
+  border-style: none;
+  outline: none;
+  transition-duration: 0.3s;
+  text-align: justify;
+  resize: none;
+}
+
+.comments .item .text textarea::placeholder {
+  color: #a26a42;
+}
+
+/* box */
+

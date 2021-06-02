@@ -1,0 +1,132 @@
+﻿@using FunCloud.Helpers
+
+@{
+    ViewBag.Title = "Обзор работы";
+    int UserID = this.ViewBag.UserID;
+    int UserRole = this.ViewBag.UserRole;
+    List<DataBaseConnector.Ext.Typle> Lists = this.ViewBag.Lists;
+}
+
+<h2 class="mb-4">Обзор работы</h2>
+
+<div class="form-horizontal position-relative ">
+
+    @{FunCloud.View.WorkView Item = this.ViewBag.Item;}
+    @if (Item != null)
+    {
+
+        <div class="card" style="width: 100%; margin: 0 0 12px 0;">
+            @if (UserID > -1)
+            {
+                <div class="btn-group d-inline-block p-1 m-0 mb-2 w-100 bg-red br-tl br-tr o-dashed" role="toolbar">
+                    @if (Item.Author.Value == UserID || UserRole == Global.AdminRoleID)
+                    {
+                        @Html.CreateButton("<i class='fas fa-book-open'></i> Читать", $"/Work/Read?WorkID={Item.ID}", Buttons.Default + " m-0")
+                        @Html.CreateButton($"<i class='far fa-thumbs-up'> {Item.Like}</i>", $"javascript:like('/Work/Like/', {Item.ID},'{Item.Author.Value}',true)", Buttons.Default + " m-0")
+                        @Html.CreateButton($"<i class='far fa-thumbs-down'> {Item.Dislike}</i>", $"javascript:like('/Work/Like/', {Item.ID},'{Item.Author.Value}',false)", Buttons.Default + " m-0")
+                        @Html.CreateButton("Похожие работы", $"/Work/FindAnalog?WorkID={Item.ID}", Buttons.Default + " m-0")
+                        @Html.CreateButton("<i class='far fa-edit'></i>", $"/Work/Edit/{Item.ID}", Buttons.Default + " m-0")
+                        @Html.CreateButton("<i class='far fa-trash-alt'></i>", $"javascript:post('/Work/Remove/',{Item.ID})", Buttons.Default + " m-0")
+                    }
+                    else
+                    {
+                        @Html.CreateButton("<i class='fas fa-book-open'></i> Читать", $"/Work/Read?WorkID={Item.ID}", Buttons.Default + " m-0")
+                        @Html.CreateButton($"<i class='far fa-thumbs-up'> {Item.Like}</i>", $"javascript:like('/Work/Like/', {Item.ID},'{Item.Author.Value}',true)", Buttons.Default + " m-0")
+                        @Html.CreateButton($"<i class='far fa-thumbs-down'> {Item.Dislike}</i>", $"javascript:like('/Work/Like/', {Item.ID},'{Item.Author.Value}',false)", Buttons.Default + " m-0")
+                        @Html.CreateButton("Поиск похожих работ", $"/Work/FindAnalog?WorkID={Item.ID}", Buttons.Default + " m-0")
+                    }
+                    @if (Lists.Count > 0)
+                    {
+                        <button class="@Buttons.Default m-0 dropdown-toggle" id="addToList" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Добавить в список</button>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="addToList">
+                            @foreach (DataBaseConnector.Ext.Typle item in Lists)
+                            {
+                                @Html.CreateButton(item.Value, $"javascript:addToList('/List/AddWork/',{item.Name},{Item.ID},{UserID})", "btn bg-red-hover m-0 w-100")
+                            }
+                        </div>
+                    }
+                </div>
+            }
+
+            <div class="card-body">
+                <h3 class="card-title">@Item.Title</h3>
+                <h6 class="card-subtitle mb-2 text-muted">Автор: @Html.ActionLink(@Item.Author.Name, "View", "Profile", new { id = Item.Author.Value }, null)</h6>
+                <h6 class="card-subtitle mb-2 text-muted">Дата публикации: @Item.Pub_date</h6>
+                <h6 class="card-subtitle mb-2 text-muted">Серия: @Html.ActionLink(@Item.Serial.Name, "Find", "Work", new { serial = Item.Serial.Value }, null)</h6>
+                <h6 class="card-subtitle mb-2 text-muted">Категория: @Html.ActionLink(@Item.Category.Name, "Find", "Work", new { category = Item.Category.Value }, null)</h6>
+                <h6 class="card-subtitle mb-2 text-muted">Фэндом: @Html.ActionLink(@Item.Fandome.Name, "Find", "Work", new { fandome = Item.Fandome.Value }, null)</h6>
+                <h6 class="card-subtitle mb-2 text-muted">
+                    Метки:
+                    @foreach (DataBaseConnector.Ext.Typle<Int32> item in Item.Marks)
+                    {
+                        //@Html.CreateButton(item.Name, $"/Work/Find?mark={item.Value}", "btn bg-red-hover o-dashed o-brown m-0")
+                        <p class="btn o-dashed o-brown m-0">@item.Name</p>
+                    }
+                </h6>
+                <h6 class="card-subtitle mb-2 text-muted">Состояние: @Item.State</h6>
+                @if (Item.Request.Value > -1 && Item.Request.Name.Length > 0)
+                {
+                    <h6 class="card-subtitle mb-2 text-muted">Основано на: @Html.ActionLink(@Item.Request.Name, "View", "Request", new { id = Item.Request.Value }, null)</h6>
+                }
+                <p class="card-text">@Item.Description</p>
+            </div>
+
+            <div class="card-body">
+                <h5 class="p-0 m-0 pr-2">Файлы:</h5>
+                <div class="d-flex flex-wrap">
+                    @foreach (String Name in Item.Files)
+                    {
+                        <div class="btn-group m-1 justify-content-start">
+                            @Html.CreateButton(Name, $"/File/Download?WorkID={Item.ID}&FileName={Name}", Buttons.Default + " m-0")
+                            @if (Item.Author.Value == UserID)
+                            {
+                                @Html.CreateButton("<i class='far fa-trash-alt'></i>", $"javascript:removefile('/File/Remove/', {Item.ID}, '{Name}')", Buttons.Default + " m-0");
+                            }
+                        </div>
+                    }
+                </div>
+                @if (Item.Author.Value == UserID)
+                {
+                    using (Html.BeginForm("Add", "File", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        <div class="form-group mt-2">
+                            @Html.Hidden("WorkID", Item.ID)
+                            <div class="custom-file" style="margin-bottom: 12px;">
+                                <input type="file" class="custom-file-input" name="file" id="file">
+                                <label id="file_list" class="custom-file-label" for="file" data-browse="Обзор" style="max-width:20em;">Выберите файл</label>
+                            </div>
+                            @Html.CreateButton("Загрузить файл", $"javascript:sendfile('/File/Add/',{Item.ID})")
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+
+        <div class="card p-3">
+            <h5>Комментарии:</h5>
+
+            @{Html.RenderPartial("Comment/Index");}
+
+        </div>
+    }
+    else
+    {
+        <p>Работа не найдена!</p>
+    }
+
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<script>
+
+    var fields = document.querySelectorAll('[type=file]'),
+        fileListOutput = document.getElementById('file_list');
+
+    for (var i = 0; i < fields.length; i++) {
+        fields[i].addEventListener('change', updFileList, false);
+    }
+
+</script>

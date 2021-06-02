@@ -1,0 +1,31 @@
+﻿@using FunCloud.Helpers
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-red o-dashed fixed-top">
+    @Html.ActionLink("FunCloud Project", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav w-100">
+            <li class="nav-item">@Html.ActionLink("Главная", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+            <li class="nav-item">@Html.ActionLink("Работы", "Index", "Work", new { area = "" }, new { @class = "nav-link" })</li>
+            <li class="nav-item">@Html.ActionLink("Заявки", "Index", "Request", new { area = "" }, new { @class = "nav-link" })</li>
+            <li class="nav-item">@Html.ActionLink("Поиск", "Find", "Work", new { area = "" }, new { @class = "nav-link" })</li>
+            <li class="nav-item">@Html.ActionLink("Проверить БД", "Check", "DataBase", new { area = "" }, new { @class = "nav-link" })</li>
+            @if (this.ViewBag.UserID == -1)
+            {
+                <li class="nav-item">@Html.ActionLink("Регистрация", "Register", "Account", new { area = "" }, new { @class = "nav-link" })</li>
+                <li class="nav-item">@Html.ActionLink("Вход", "Login", "Account", new { area = "" }, new { @class = "nav-link" })</li>
+            }
+            @if (this.ViewBag.UserID > -1)
+            {
+                string UserName = this.User.Identity.Name;
+                <div class="d-flex ml-lg-auto">
+                    <li class="nav-item pr-3">@Html.CreateButton($"<i class='fas fa-user'></i> {UserName}", $"/Profile/View/{this.ViewBag.UserID}", "nav-link")</li>
+                    <li class="nav-item">@Html.CreateButton($"<i class='fas fa-sign-out-alt fa-lg'></i>", "/Account/Logoff", "nav-link")</li>
+                </div>
+            }
+        </ul>
+    </div>
+</nav>

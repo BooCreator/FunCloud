@@ -1,0 +1,9 @@
+* {
+  margin: 0 auto;
+  padding: 0;
+  -webkit-font-smoothing: subpixel-antialiased;
+}
+
+body {
+  background-color: burlywood;
+}

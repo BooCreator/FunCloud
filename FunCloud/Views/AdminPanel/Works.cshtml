@@ -1,0 +1,92 @@
+﻿@model FunCloud.Models.PublicModel.AdminPanel.Table<FunCloud.Work.WorkPublicModel>
+
+@using FunCloud.Helpers
+@using DataBaseConnector.Ext
+
+@{
+    ViewBag.Title = "Управление работами";
+}
+
+<h2 class="mb-4">Управление работами</h2>
+
+<div class="form-horizontal position-relative ">
+    <div class="card w-100 d-flex flex-wrap" style="margin: 0 0 12px 0;">
+
+        @{ Html.RenderPartial("_AdminMenu"); }
+
+        <div class="card p-3">
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true)
+
+                <table>
+                    <tbody>
+                        <tr>
+                            <th>ИД</th>
+                            <th>Название</th>
+                            <th style="max-width: 160px;">Категория</th>
+                            <th style="max-width: 160px;">Фэндом</th>
+                            <th style="max-width: 160px;">Управление</th>
+                        </tr>
+
+                        @for (int i = 0; i < Model.Items.Count; i++)
+                        {
+                            <tr>
+                                <td>
+                                    <p>@Model.Items[i].ID</p>
+                                </td>
+                                <td>
+                                    <div class="btn-group pl-0 pr-0">
+                                        <input type="text" class="form-control" id="Title_@i" aria-describedby="nameHelp" value="@Model.Items[i].Title">
+                                        @Html.CreateButton("<i class='far fa-save'></i>", $"javascript:post_data('/AdminPanel/WorksOne/', {Model.Items[i].ID}, 'Title_{i}')", Buttons.Default + " m-0")
+                                    </div>
+                                </td>
+                                <td style="max-width: 160px;">
+                                    @Html.DropDownList($"Category_{i}", ViewBag.Categories as List<Typle>, Model.Items[i].Category)
+                                </td>
+                                <td style="max-width: 160px;">
+                                    @Html.DropDownList($"Fandome_{i}", ViewBag.Fandomes as List<Typle>, Model.Items[i].Fandome)
+                                </td>
+                                <td style="max-width: 160px;">
+                                    @Html.DropDownList($"State_{i}", ViewBag.States as List<Typle>, Model.Items[i].State)
+                                </td>
+                                <td style="max-width: 160px;">
+                                    <div class="btn-group pl-0 pr-0">
+                                        @Html.CreateButton("<i class='far fa-save'></i>", $"javascript:post_data_work('/AdminPanel/Works/', {Model.Items[i].ID}, '{i}')", Buttons.Default + " m-0")
+                                        @Html.CreateButton("<i class='far fa-user'></i>", $"/Profile/View/{ Model.Items[i].Author }", Buttons.Default + " m-0")
+                                        @Html.CreateButton("<i class='fas fa-book-open'></i>", $"/Work/View/{ Model.Items[i].ID }", Buttons.Default + " m-0")
+                                        @Html.CreateButton("<i class='far fa-trash-alt'></i>", $"javascript:post('/Work/Remove/',{Model.Items[i].ID})", Buttons.Default + " m-0")
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<script>
+    function post_data_work(action, item_id, elem_id) {
+        var value = $("#Title_" + elem_id).val();
+        var categ = $("#Category_" + elem_id).val();
+        var fandm = $("#Fandome_" + elem_id).val();
+        var state = $("#State_" + elem_id).val();
+        $.post(action, { id: item_id, title: value, category: categ, fandome: fandm, state: state }).done(
+            function (data) {
+                if (data == "ok") {
+                    location.reload();
+                } else {
+                    msg(data);
+                }
+            });
+    }
+</script>

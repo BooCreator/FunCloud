@@ -1,0 +1,13 @@
+﻿@using FunCloud.Helpers;
+
+    <div class="btn-group p-1 m-0 mb-2 w-100 bg-red br-tl br-tr o-dashed" style="flex-wrap: wrap;" role="toolbar">
+        @Html.CreateButton("Пользователи", $"/AdminPanel/Users/", Buttons.Red + " m-0")
+        @Html.CreateButton("Работы", $"/AdminPanel/Works/", Buttons.Red + " m-0")
+        @Html.CreateButton("Заявки", $"/AdminPanel/Requests/", Buttons.Red + " m-0")
+        @Html.CreateButton("Комментарии", $"/AdminPanel/Comments/", Buttons.Red + " m-0")
+        @Html.CreateButton("Категории", $"/AdminPanel/Categories/", Buttons.Red + " m-0")
+        @Html.CreateButton("Фэндомы", $"/AdminPanel/Fandoms/", Buttons.Red + " m-0")
+        @Html.CreateButton("Метки", $"/AdminPanel/Marks/", Buttons.Red + " m-0")
+        @Html.CreateButton("Состояния", $"/AdminPanel/States/", Buttons.Red + " m-0")
+        @Html.CreateButton("Роли пользователей", $"/AdminPanel/Roles/", Buttons.Red + " m-0")
+    </div>

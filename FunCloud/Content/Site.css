@@ -1,0 +1,192 @@
+﻿* {
+    -webkit-font-smoothing: subpixel-antialiased;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea,
+.form-control {
+    /*max-width: 280px;*/
+    color: #a26a42;
+}
+
+.card {
+    
+    border-style: none;
+}
+
+a,
+a.page-link {
+    color: #a26a42;
+    text-decoration: none;
+    transition-duration: 0.2s;
+}
+
+    a.page-link.active.disabled {
+        color: darkgray;
+        cursor: default;
+    }
+
+        a.page-link.active.disabled:hover {
+            background-color: white;
+        }
+
+    a:hover,
+    a.page-link:hover {
+        color: #a26a42;
+    }
+
+.btn-button {
+    border-style: none;
+    margin: 0 6px;
+    transition: color 0.15s ease-out, background-color 0.15s ease-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, border-radius 0.2s ease-out;
+}
+
+    
+
+.a-button {
+    transition-duration: 0.2s;
+    color: #a26a42;
+}
+
+    .a-button:hover {
+        color: #864b21;
+    }
+
+
+/* red style */
+
+.bg-red {
+    background-color: #711010;
+    color: white;
+    outline-color: #a26a42;
+}
+    .bg-red-hover:hover {
+        background-color: #b12b2b;
+        color: white;
+        outline-color: white;
+    }
+
+/* brown style */
+
+.bg-brown {
+    background-color: #a26a42;
+    color: white;
+    outline-color: #711010;
+}
+    .bg-brown-hover:hover {
+        background-color: #864b21;
+        color: white;
+    }
+
+.bg-darkbrown {
+    background-color: #752d1f;
+    color: white;
+    outline-color: #711010;
+}
+    .bg-darkbrown-hover:hover {
+        background-color: #864b21;
+        color: white;
+    }
+
+.o-dashed {
+    outline-width: 1px;
+    outline-style: dashed;
+    outline-offset: -4px;
+}
+
+.b-dashed {
+    border-width: 1px;
+    border-style: dashed;
+}
+
+.bg-burluwoon {
+    background-color: burlywood;
+}
+
+.card.o-dashed,
+.o-brown {
+    outline-color: #a26a42;
+}
+
+.bg-1 {
+    background-image: url('/img/bg (1).jpg');
+    background-repeat: repeat;
+}
+.bg-2 {
+    background-image: url('/img/bg (2).jpg');
+    background-repeat: repeat;
+}
+.bg-3 {
+    background-image: url('/img/bg (3).jpg');
+    background-repeat: repeat;
+}
+
+.br-tl {
+    border-top-left-radius: 0.25em;
+}
+.br-tr {
+    border-top-right-radius: 0.25em;
+}
+
+table {
+    width: 100%;
+}
+
+table tr {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+table tr th {
+    margin-bottom: 12px;
+}
+
+table tr th,
+table tr td {
+    text-align: center;
+    width: 100%;
+}
+    table tr td:first-child,
+    table tr th:first-child {
+        max-width: 80px;
+        vertical-align: central;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+        table tr td:first-child p,
+        table tr th:first-child p {
+            margin: 0;
+        }
+
+        table tr th .btn-group,
+        table tr td .btn-group {
+            width: 100%;
+        }
+
+        table tr td .btn-group input.form-control,
+        table tr td .btn-group select.form-control {
+            border-radius: 0.25rem 0 0 0.25rem;
+        }

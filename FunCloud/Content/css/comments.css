@@ -1,0 +1,45 @@
+.comments {
+  padding: 20px;
+  width: 100%;
+}
+
+.comments .item {
+  margin: 10px auto;
+  border-style: solid;
+  border-width: 1px;
+  border-color: brown;
+  font-weight: bold;
+}
+
+.comments .item .line {
+  padding: 4px 10px;
+}
+
+.comments .item .line * {
+  margin: 0;
+}
+
+.comments .item .author {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  background-color: #f5d6ae;
+}
+
+.comments .item .text {
+  font-weight: normal;
+  text-align: justify;
+}
+
+.comments .item.like .author {
+  background-color: #79c779;
+}
+.comments .item.like {
+  background-color: #daf5da;
+}
+.comments .item.dislike .author {
+  background-color: #d88080;
+}
+.comments .item.dislike {
+  background-color: #f9cccc;
+}

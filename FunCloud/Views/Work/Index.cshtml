@@ -1,0 +1,83 @@
+﻿@using FunCloud.Helpers
+
+@using DataBaseConnector.Ext
+
+@{
+    ViewBag.Title = "Список работ";
+    int UserID = this.ViewBag.UserID;
+    int UserRole = this.ViewBag.UserRole;
+}
+
+<h2 class="mb-4">Список работ</h2>
+
+<div class="card pb-3">
+
+    <div class="btn-group d-inline-block p-1 m-0 mb-2 w-100 bg-red br-tl br-tr o-dashed" role="toolbar">
+        @Html.CreateButton("<i class='fas fa-feather-alt'></i> Опубликовать работу", $"/Work/Public/", Buttons.Red + " m-0")
+        @Html.CreateButton("<i class='fas fa-search'></i> Открыть поиск", $"/Work/Find/", Buttons.Red + " m-0")
+    </div>
+
+    <div class="form-horizontal position-relative">
+
+        @if (ViewBag.Items.Count > 0)
+        {
+            foreach (FunCloud.View.WorkView Item in this.ViewBag.Items)
+            {
+                <div class="card col border-bottom" style="min-width: 24rem; margin: 0 12px 12px 0;">
+                    <div class="card-body">
+                        <h3 class="card-title">@Html.ActionLink(@Item.Title, "View", "Work", new { id = Item.ID }, null)</h3>
+                        <h6 class="card-subtitle mb-2 text-muted">Автор: @Html.ActionLink(@Item.Author.Name, "View", "Profile", new { id = Item.Author.Value }, null)</h6>
+                        <h6 class="card-subtitle mb-2 text-muted">Дата публикации: @Item.Pub_date</h6>
+                        <h6 class="card-subtitle mb-2 text-muted">Серия: @Html.ActionLink(@Item.Serial.Name, "Find", "Work", new { serial = Item.Serial.Value }, null)</h6>
+                        <h6 class="card-subtitle mb-2 text-muted">Категория: @Html.ActionLink(@Item.Category.Name, "Find", "Work", new { category = Item.Category.Value }, null)</h6>
+                        <h6 class="card-subtitle mb-2 text-muted">Фэндом: @Html.ActionLink(@Item.Fandome.Name, "Find", "Work", new { fandome = Item.Fandome.Value }, null)</h6>
+                        <h6 class="card-subtitle mb-2 text-muted">Метки: 
+                        @foreach(DataBaseConnector.Ext.Typle<Int32> item in Item.Marks)
+                        {
+                            //@Html.CreateButton(item.Name, $"/Work/Find?mark={item.Value}", "btn bg-red-hover o-dashed o-brown m-0")
+                            <p class="btn o-dashed o-brown m-0">@item.Name</p>
+                        }
+                        </h6>
+                        <h6 class="card-subtitle mb-2 text-muted">Состояние: @Item.State</h6>
+                        @if (Item.Request.Value > -1 && Item.Request.Name.Length > 0)
+                        {
+                            <h6 class="card-subtitle mb-2 text-muted">Основано на: @Html.ActionLink(@Item.Request.Name, "View", "Request", new { id = Item.Request.Value }, null)</h6>
+                        }
+                        <p class="card-text">@Item.Description</p>
+                    </div>
+
+                    @if (UserID > -1)
+                    {
+                <div class="btn-group d-inline-block p-2 m-2 w-100" role="toolbar">
+                    @if (Item.Author.Value == UserID || UserRole == Global.AdminRoleID)
+                    {
+                        @Html.CreateButton("<i class='fas fa-book-open'></i> Читать", $"/Work/Read?WorkID={Item.ID}", Buttons.Default + " m-0")
+                        @Html.CreateButton($"<i class='far fa-thumbs-up'> {Item.Like}</i>", $"javascript:like('/Work/Like/', {Item.ID},'{Item.Author.Value}',true)", Buttons.Default + " m-0")
+                        @Html.CreateButton($"<i class='far fa-thumbs-down'> {Item.Dislike}</i>", $"javascript:like('/Work/Like/', {Item.ID},'{Item.Author.Value}',false)", Buttons.Default + " m-0")
+                        @Html.CreateButton("<i class='far fa-edit'></i>", $"/Work/Edit/{Item.ID}", Buttons.Default + " m-0")
+                        @Html.CreateButton("<i class='far fa-trash-alt'></i>", $"javascript:post('/Work/Remove/',{Item.ID})", Buttons.Default + " m-0")
+                        @Html.CreateButton("Поиск похожих работ", $"/Work/FindAnalog?WorkID={Item.ID}", Buttons.Default + " m-0")
+                    }
+                    else
+                    {
+                        @Html.CreateButton("<i class='fas fa-book-open'></i> Читать", $"/Work/Read?WorkID={Item.ID}", Buttons.Default + " m-0")
+                        @Html.CreateButton($"<i class='far fa-thumbs-up'> {Item.Like}</i>", $"javascript:like('/Work/Like/', {Item.ID},'{Item.Author.Value}',true)", Buttons.Default + " m-0")
+                        @Html.CreateButton($"<i class='far fa-thumbs-down'> {Item.Dislike}</i>", $"javascript:like('/Work/Like/', {Item.ID},'{Item.Author.Value}',false)", Buttons.Default + " m-0")
+                        @Html.CreateButton("Поиск аналогичных работ", $"/Work/FindAnalog?WorkID={Item.ID}", Buttons.Default + " m-0")
+                    }
+                </div>
+                    }
+
+                </div>
+
+            }
+        }
+    </div>
+
+    @{ Html.RenderPartial("_Pagination"); }
+
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

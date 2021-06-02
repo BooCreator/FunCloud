@@ -1,0 +1,57 @@
+﻿@model FunCloud.Models.PublicModel.AdminPanel.Table<FunCloud.Comment.CommentPublicModel>
+
+@using FunCloud.Helpers
+
+@{
+    ViewBag.Title = "Управление комментариями";
+}
+
+<h2 class="mb-4">Управление комментариями</h2>
+
+<div class="form-horizontal position-relative ">
+    <div class="card w-100 d-flex flex-wrap" style="margin: 0 0 12px 0;">
+
+        @{ Html.RenderPartial("_AdminMenu"); }
+
+        <div class="card p-3">
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true)
+
+                <table>
+                    <tbody>
+                        <tr>
+                            <th style="max-width: 120px;">Дата</th>
+                            <th>Текст</th>
+                        </tr>
+
+                        @for (int i = 0; i < Model.Items.Count; i++)
+                        {
+                            <tr>
+                                <td style="max-width: 120px;">
+                                    <p>@Model.Items[i].Pub_date</p>
+                                </td>
+                                <td>
+                                    <div class="btn-group pl-0 pr-0">
+                                        <input type="text" class="form-control" id="Text_@i" aria-describedby="nameHelp" value="@Model.Items[i].Text">
+                                        @Html.CreateButton("<i class='far fa-user'></i>", $"/Profile/View/{ Model.Items[i].Author }", Buttons.Default + " m-0")
+                                        @Html.CreateButton("<i class='fas fa-book-open'></i>", $"/Work/View/{ Model.Items[i].Work }", Buttons.Default + " m-0")
+                                        @Html.CreateButton("<i class='far fa-save'></i>", $"javascript:post_data('/AdminPanel/Comments/', {Model.Items[i].ID}, 'Text_{i}')", Buttons.Default + " m-0")
+                                        @Html.CreateButton("<i class='far fa-trash-alt'></i>", $"javascript:post_data('/AdminPanel/Comments/',{Model.Items[i].ID}, 0)", Buttons.Default + " m-0")
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

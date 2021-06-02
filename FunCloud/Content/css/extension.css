@@ -1,0 +1,29 @@
+/* невидимый блок, ограничивающий ширину контента */
+.page {
+  position: relative;
+  max-width: 60vw;
+  min-width: 600px;
+  width: 100%;
+}
+
+/* логический flex-блок */
+.box {
+  position: relative;
+  display: flex;
+  margin: 0;
+}
+
+/* логический блок, указывающий что блок является кнопкой */
+.button {
+  min-width: 140px; 
+}
+
+.sizer {
+  transition-duration: 0.2s;
+}
+
+.sizer:hover {
+  -webkit-transform: scale(1.2);
+  -ms-transform: scale(1.2);
+  transform: scale(1.2);
+}

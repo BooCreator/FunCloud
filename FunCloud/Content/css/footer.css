@@ -1,0 +1,15 @@
+footer {
+  position: relative;
+}
+
+footer .page {
+  display: flex;
+  flex-direction: column;
+}
+
+/* text */
+
+footer .page p {
+  text-align: center;
+  color: #8b4513;
+}

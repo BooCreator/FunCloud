@@ -1,0 +1,73 @@
+﻿@using FunCloud.Helpers
+
+@{
+    ViewBag.Title = "Главная страница";
+}
+
+<h2 class="mb-4"></h2>
+
+<div class="card position-relative">
+
+    @using (Html.BeginForm("Find", "Work", FormMethod.Post))
+    {
+        <div class="btn-group d-inline-block p-1 m-0 mb-2 w-100 bg-red br-tl br-tr o-dashed" role="toolbar">
+            @Html.CreateButton("<i class='fas fa-feather-alt'></i> Опубликовать работу", $"/Work/Public/", Buttons.Red + " m-0")
+            @Html.CreateButton("<i class='fas fa-search'></i> Поиск работ", $"/Work/Find/", Buttons.Red + " m-0")
+            @Html.CreateButton("<i class='fas fa-search'></i> Поиск заявок", $"/Work/Find/", Buttons.Red + " m-0")
+            @Html.CreateButton("<i class='fas fa-random'></i> Случайная работа", $"/Work/Random/", Buttons.Red + " m-0")
+        </div>
+    }
+
+    <div class="card-body">
+        <h5>Фэндомы</h5>
+        @if (this.ViewBag.Fandoms != null)
+        {
+            <div class="" style="margin: 0 -1.25rem; padding: 8px 1.25rem;">
+                @foreach (DataBaseConnector.Ext.Typle<Int32> Item in this.ViewBag.Fandoms)
+                {
+                    @Html.CreateButton(Item.Name, $"/Work/Find?fandome={Item.Value}", Buttons.Default + " mb-2")
+                }
+            </div>
+        }
+    </div>
+
+    <div class="card-body">
+        <h5>Вселенные</h5>
+        @if (this.ViewBag.Universes != null)
+        {
+            <div class="">
+                @foreach (DataBaseConnector.Ext.Typle<Int32> Item in this.ViewBag.Universes)
+                {
+                    @Html.CreateButton("<i class='fas fa-globe-europe'></i> " + Item.Name, $"/Work/Find?universe={Item.Value}", Buttons.Default + " mb-2")
+                }
+            </div>
+        }
+    </div>
+
+    <div class="card-body">
+        <h5>Популярные работы</h5>
+        @if (this.ViewBag.Fandoms != null)
+        {
+            <div class="" style="margin: 0 -1.25rem; padding: 8px 1.25rem;">
+                @foreach (DataBaseConnector.Ext.Typle<Int32> Item in this.ViewBag.Works)
+                {
+                    @Html.CreateButton("<i class='fas fa-book'></i> " + Item.Name, $"/Work/View/{Item.Value}", Buttons.Default + " mb-2")
+                }
+            </div>
+        }
+    </div>
+
+    <div class="card-body">
+        <h5 class="">Популярные авторы</h5>
+        @if (this.ViewBag.Fandoms != null)
+        {
+            <div class="" style="margin: 0 -1.25rem; padding: 8px 1.25rem;">
+                @foreach (DataBaseConnector.Ext.Typle<Int32> Item in this.ViewBag.Authors)
+                {
+                    @Html.CreateButton("<i class='far fa-user'></i> " + Item.Name, $"/Profile/View/{Item.Value}", Buttons.Default + " mb-2")
+                }
+            </div>
+        }
+    </div>
+
+</div>

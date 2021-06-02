@@ -1,0 +1,52 @@
+﻿@model FunCloud.Account.ProfileModel
+
+@using FunCloud.Helpers
+
+@{
+    ViewBag.Title = "Изменение данных пользователя";
+
+    int UserID = this.ViewBag.UserID;
+
+}
+
+<h2 class="mb-4">Изменение данных пользователя</h2>
+
+
+<div class="card p-3">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+
+        @Html.Hidden("ID", UserID)
+
+        <div class="form-group">
+            <h5 for="Name">Логин:</h5>
+            <input type="text" class="form-control" id="Name" name="Name" aria-describedby="nameHelp" value="@this.User.Identity.Name">
+            <small id="nameHelp" class="form-text text-muted">Введите имя пользователя.</small>
+            @Html.ValidationMessageFor(model => model.Name)
+        </div>
+        <div class="form-group">
+            <h5 for="Password">Текущий Пароль:</h5>
+            <input type="password" class="form-control" id="Password" name="Password">
+            @Html.ValidationMessageFor(model => model.Password)
+        </div>
+        <div class="form-group">
+            <h5 for="Password">Новый пароль:</h5>
+            <input type="password" class="form-control" id="NewPassword" name="NewPassword">
+            <small id="nameHelp" class="form-text text-muted">Не обязательно, если пароль не меняется.</small>
+            @Html.ValidationMessageFor(model => model.NewPassword)
+        </div>
+        <div class="form-group">
+            <h5 for="ConfirmPassword">Повтор пароля:</h5>
+            <input type="password" class="form-control" id="ConfirmPassword" name="ConfirmPassword">
+            @Html.ValidationMessageFor(model => model.ConfirmPassword)
+        </div>
+
+        <button type="submit" class="@Buttons.Default">Сохранить</button>
+
+    }
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

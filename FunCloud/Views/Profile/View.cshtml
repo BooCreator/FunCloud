@@ -1,0 +1,233 @@
+﻿@using FunCloud.Helpers
+
+@{
+    ViewBag.Title = "Профиль пользователя";
+
+    FunCloud.View.UserView User = this.ViewBag.User;
+    bool isUser = (User?.ID == this.ViewBag.UserID);
+}
+
+<h2 class="mb-4">Профиль пользователя</h2>
+
+<div class="form-horizontal position-relative ">
+    <div class="card w-100 d-flex flex-wrap" style="margin: 0 0 12px 0;">
+
+        @if (User != null)
+        {
+            <!-- Главное меню -->
+            <div class="btn-group d-inline-block p-1 m-0 mb-2 w-100 bg-red br-tl br-tr o-dashed" role="toolbar">
+                @if (isUser)
+                {
+                    @Html.CreateButton("Все работы автора", $"/Work/Find?author={User.ID}", Buttons.Red + " m-0")
+                    @Html.CreateButton("<i class='fas fa-user-edit'></i>", $"/Profile/Edit/{User.ID}", Buttons.Red + " m-0")
+                    @Html.CreateButton("<i class='fas fa-user-slash'></i>", $"javascript:post('/Profile/Remove/',{User.ID})", Buttons.Red + " m-0")
+                    if (User.Role == Global.AdminRoleID)
+                    {
+                        @Html.CreateButton("Панель редактирования", $"/AdminPanel/Users/", Buttons.Red + " m-0")
+                    }
+                }
+                else
+                {
+                    @Html.CreateButton("Все работы автора", $"/Work/Find?author={User.ID}", Buttons.Red + " m-0")
+                    if (User.Followers.FindIndex(x => x.Value == this.ViewBag.UserID) < 0)
+                    {
+                        @Html.CreateButton("Подписаться", $"javascript:post('/Subscribe/On/',{User.ID})", Buttons.Red + " m-0")
+                    }
+                    else
+                    {
+                        @Html.CreateButton("Отписаться", $"javascript:post('/Subscribe/Off/',{User.ID})", Buttons.Red + " m-0")
+                    }
+                }
+
+            </div>
+
+            <!-- Информация пользователя -->
+            <div class="d-flex flex-wrap">
+
+                <!-- Основная информация -->
+                <div class="card-body" style="min-width: 300px;">
+                    <h3 class="card-title d-flex">
+                        @User.Login
+                        @if (Global.LoginedUser.Find(x => x.UserID == User.ID) != null)
+                        {
+                            <i class="ml-1" style="color: green; font-size: 14px;">online</i>
+                        }
+                    </h3>
+                    <h6 class="card-subtitle mb-2 text-muted">Дата регистрации: @User.Reg_date</h6>
+                    <h6 class="card-subtitle mb-2 text-muted">Дата входа: @User.Log_date</h6>
+                    <p> </p>
+                    <h5 class="card-text">Полулярные работы (10):</h5>
+                    <div class="">
+                        @foreach (FunCloud.Models.DataBase.Work Item in User.PopularWorks)
+                        {
+                            <h6 class="card-subtitle m-2 text-muted">
+                                @Html.ActionLink(Item.Title.Value + $"({Item.Like.Value}/{Item.Dislike.Value})", "View", "Work", new { id = Item.ID.Value }, null)
+                            </h6>
+                        }
+                    </div>
+                </div>
+
+                <div class="card-body" style="min-width: 300px;">
+
+                    <!-- Серии пользователя -->
+                    <div class="card-text d-flex align-items-center">
+                        <div class="d-inline-flex">
+                            @if (User.ID == this.ViewBag.UserID)
+                            {
+                                <a class="d-flex align-items-center btn p-1" href="" type="button" id="addSerialDropDown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-caret-down fa-2x a-button"></i>
+                                </a>
+                            }
+                            <div class="dropdown-menu" aria-labelledby="addSerialDropDown">
+                                @using (Html.BeginForm("Add", "Serial", FormMethod.Post, new { id = "serial_add" }))
+                                {
+                                    @Html.Hidden("Author", User.ID)
+                                    <div class="d-flex align-items-center" style="flex-direction: row; margin-left: 6px;">
+                                        <input type="text" class="form-control" name="Title" aria-describedby="nameTitle">
+                                        @Html.CreateButton("<i class='fas fa-plus'></i>", $"javascript:post_form('/Serial/Add/', 'serial_add')")
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <h5 class="p-0 m-0 pr-2">Серии работ:</h5>
+                    </div>
+
+                    <div class="d-flex flex-wrap">
+                        @foreach (FunCloud.Models.DataBase.Serial Item in User.Serials)
+                        {
+                            <div class="btn-group m-1 justify-content-start">
+                                @if (isUser)
+                                {
+                                    @Html.CreateButton(Item.Title.Value, $"/Work/Find?serial={Item.ID.Value}", Buttons.Default + " m-0")
+
+                                    <button class="@Buttons.Default m-0" id="edtListDropDown-@Item.ID" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class='far fa-edit'></i></button>
+                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="edtListDropDown-@Item.ID">
+                                        @using (Html.BeginForm("Edit", "List", FormMethod.Post, new { id = "serial_edt_" + Item.ID.Value }))
+                                        {
+                                            @Html.Hidden("id", Item.ID.Value)
+                                            <div class="d-flex align-items-center" style="flex-direction: row; margin-left: 6px;">
+                                                <input type="text" class="form-control" name="Title" value="@Item.Title.Value">
+                                                @Html.CreateButton("<i class='fas fa-check'></i>", $"javascript:post_form('/Serial/Edit/', 'serial_edt_{Item.ID.Value}')")
+                                            </div>
+                                        }
+                                    </div>
+
+                                    @Html.CreateButton("<i class='far fa-trash-alt'></i>", $"javascript:post('/Serial/Remove/', {Item.ID.Value})", Buttons.Default + " m-0");
+                                }
+                                else
+                                {
+                                    @Html.CreateButton(Item.Title.Value, $"/Work/Find&serial={Item.ID.Value}", Buttons.Default + " m-0")
+                                }
+                            </div>
+
+                        }
+                    </div>
+
+                    <!-- Списки пользователя -->
+                    <div class="card-text d-flex align-items-center mt-2">
+                        <div class="d-inline-flex">
+                            @if (User.ID == this.ViewBag.UserID)
+                            {
+                                <a class="d-flex align-items-center btn p-1" href="" type="button" id="addListDropDown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-caret-down fa-2x a-button"></i>
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="addListDropDown">
+                                    @using (Html.BeginForm("Add", "List", FormMethod.Post, new { id = "list_add" }))
+                                    {
+                                        @Html.Hidden("Author", User.ID)
+                                        <div class="d-flex align-items-center" style="flex-direction: row; margin-left: 6px;">
+                                            <input type="text" class="form-control" name="Title" aria-describedby="nameTitle">
+                                            @Html.CreateButton("<i class='fas fa-plus'></i>", $"javascript:post_form('/List/Add/', 'list_add')")
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                        <h5 class="p-0 m-0 pr-2">Списки пользователя:</h5>
+                    </div>
+
+                    <div class="d-flex flex-wrap">
+                        @foreach (FunCloud.View.ListView Item in User.Lists)
+                        {
+                            <div class="pos-f-t m-1 d-flex flex-column">
+                                <div class="d-flex flex-nowrap m-0 p-0 btn bg-darkbrown" style="width: 260px;">
+                                    <div class="btn-group pl-0 pr-0 ">
+                                        <button class="@Buttons.Default m-0" type="button" data-toggle="collapse" data-target="#navbar-@Item.ID" aria-controls="navbar-@Item.ID" aria-expanded="false" aria-label="Toggle navigation">
+                                            <p class="dropdown-toggle d-flex align-items-center m-0">@Item.Title</p>
+                                        </button>
+                                        @if (isUser)
+                                        {
+                                            <button class="@Buttons.Default m-0" id="edtListDropDown-@Item.ID" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class='far fa-edit'></i></button>
+                                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="edtListDropDown-@Item.ID">
+                                                @using (Html.BeginForm("Edit", "List", FormMethod.Post, new { id = "list_edt_" + Item.ID }))
+                                                {
+                                                    @Html.Hidden("id", Item.ID)
+                                                    <div class="d-flex align-items-center" style="flex-direction: row; margin-left: 6px;">
+                                                        <input type="text" class="form-control" name="Title" value="@Item.Title">
+                                                        @Html.CreateButton("<i class='fas fa-check'></i>", $"javascript:post_form('/List/Edit/', 'list_edt_{Item.ID}')")
+                                                    </div>
+                                                }
+                                            </div>
+                                            <button class="@Buttons.Default m-0" onclick="javascript:post('/List/Remove/', @Item.ID)"><i class='far fa-trash-alt'></i></button>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="collapse" id="navbar-@Item.ID" style="width: 260px;">
+                                    <div class="btn-group d-inline-flex pt-1 pb-1 p-0 m-0 mb-2 w-100 flex-nowrap align-items-center" role="toolbar">
+                                        @foreach (DataBaseConnector.Ext.Typle<Int32> Work in Item.Works)
+                                        {
+                                            string name = (Work.Name.Length > 23) ? Work.Name.Substring(0, 23) + "..." : Work.Name;
+                                            @Html.CreateButton(name, $"/Work/View/{Work.Value}", Buttons.Default + " m-0")
+                                            if (isUser)
+                                            {
+                                                @Html.CreateButton("<i class='fas fa-times'></i>", $"javascript:removeFromList('/List/RemoveWork/', {Item.ID}, {Work.Value}, {User.ID})", Buttons.Default + " m-0");
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Подписчики и подписки -->
+            <div class="d-flex flex-wrap">
+
+                <div class="card-body">
+                    <h5 class="card-text">Подписчики:</h5>
+                    @foreach (DataBaseConnector.Ext.Typle<Int32> Item in User.Followers)
+                    {
+                        <div class="btn-group pl-0 pr-0">
+                            @Html.CreateButton(Item.Name, $"/Profile/View/{Item.Value}", Buttons.Default + " m-0")
+                            @Html.CreateButton("<i class='fas fa-times'></i>", $"javascript:post('/Subscribe/Off/',{Item.Value})", Buttons.Default + " m-0")
+                        </div>
+                    }
+                </div>
+
+                <div class="card-body">
+                    <h5 class="card-text">Подписки:</h5>
+                    @foreach (DataBaseConnector.Ext.Typle<Int32> Item in User.Users)
+                    {
+                        <div class="btn-group pl-0 pr-0">
+                            @Html.CreateButton(Item.Name, $"/Profile/View/{Item.Value}", Buttons.Default + " m-0")
+                            @Html.CreateButton("<i class='fas fa-times'></i>", $"javascript:post('/Subscribe/Off/',{Item.Value})")
+                        </div>
+                    }
+                </div>
+
+            </div>
+        }
+        else
+        {
+            <div class="card-body">
+                <h4 class="text-muted">Пользователь не найден!</h4>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

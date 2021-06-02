@@ -1,0 +1,165 @@
+﻿@model FunCloud.Work.WorkPublicModel
+
+@using FunCloud.Helpers
+
+@{
+    ViewBag.Title = "Публикация";
+    int UserID = this.ViewBag.UserID;
+}
+
+<h2 class="mb-4">Публикация работы</h2>
+
+@{
+
+    int request = -1;
+    if (this.ViewBag.Request != null)
+    {
+        request = this.ViewBag.Request;
+    }
+}
+
+<div class="card" style="width: 100%; margin: 0 0 12px 0;">
+
+    @if (UserID > -1)
+    {
+        using (Html.BeginForm("Public", "Work", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+
+            <div class="card-body">
+
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true)
+
+                <div class="form-group">
+                    <h5 class="card-title">Название:</h5>
+                    <input type="text" class="form-control" id="Title" name="Title" aria-describedby="nameTitle">
+                    @Html.ValidationMessageFor(model => model.Title)
+                </div>
+
+                <div class="form-group">
+                    <h5 class="card-title">Серия:</h5>
+                    @Html.DropDownList("Serial", ViewBag.Serials as SelectList, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Serial)
+                </div>
+
+                <div class="form-group">
+                    <h5 class="card-title">Категория:</h5>
+                    @Html.DropDownList("Category", ViewBag.Categories as SelectList, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Category)
+                </div>
+
+                <div class="form-group">
+                    <h5 class="card-title">Фэндом:</h5>
+                    @Html.DropDownList("Fandome", ViewBag.Fandomes as SelectList, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Fandome)
+                </div>
+
+                <div class="form-group">
+                    <h5 class="card-title">Метки:</h5>
+                    <input type="text" class="form-control" id="Marks" name="Marks" aria-describedby="nameMarks" data-toggle="dropdown">
+                    @Html.ValidationMessageFor(model => model.Marks)
+                    @Html.Hidden("MarksPos", "0")
+                    <div class="dropdown-menu dropdown-menu-left dropdown-menu-lg-left" id="MarksDropDown" aria-labelledby="MarksName">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <h5 class="card-title">Описание:</h5>
+                    <textarea class="form-control" id="Description" name="Description" rows="4" maxlength="255"></textarea>
+                    @Html.ValidationMessageFor(model => model.Description)
+                </div>
+
+                @Html.Hidden("Author", UserID)
+
+                @Html.Hidden("Request", request)
+
+                <div class="form-group">
+                    <h5 class="card-title">Состояние:</h5>
+                    @Html.DropDownList("State", ViewBag.States as SelectList, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.State)
+                </div>
+
+                <div class="form-group">
+                    <h5 class="card-title">Файл основного текста (.doc, .docx, .pdf, .txt):</h5>
+                    <div class="custom-file" style="margin-bottom: 12px;">
+                        <input type="file" class="custom-file-input" name="basefile" id="file">
+                        <label id="file_list" class="custom-file-label" for="file" data-browse="Обзор" style="max-width:20em;">Выберите файл</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <h5 class="card-title">Дополнительные файлы:</h5>
+                    <div class="custom-file" style="margin-bottom: 12px;">
+                        <input type="file" class="custom-file-input" name="uploads" id="file1">
+                        <label class="custom-file-label" for="file1" data-browse="Обзор" style="max-width:20em;">Выберите файл</label>
+                    </div>
+                    <div class="custom-file" style="margin-bottom: 12px;">
+                        <input type="file" class="custom-file-input" name="uploads" id="file2">
+                        <label class="custom-file-label" for="file2" data-browse="Обзор" style="max-width:20em;">Выберите файл</label>
+                    </div>
+                    <div class="custom-file" style="margin-bottom: 12px;">
+                        <input type="file" class="custom-file-input" name="uploads" id="file3">
+                        <label class="custom-file-label" for="file3" data-browse="Обзор" style="max-width:20em;">Выберите файл</label>
+                    </div>
+                    <div class="custom-file" style="margin-bottom: 12px;">
+                        <input type="file" class="custom-file-input" name="uploads" id="file4">
+                        <label class="custom-file-label" for="file4" data-browse="Обзор" style="max-width:20em;">Выберите файл</label>
+                    </div>
+                    <div class="custom-file" style="margin-bottom: 12px;">
+                        <input type="file" class="custom-file-input" name="uploads" id="file5">
+                        <label class="custom-file-label" for="file5" data-browse="Обзор" style="max-width:20em;">Выберите файл</label>
+                    </div>
+                </div>
+
+                <button type="submit" class="@Buttons.Default">Опубликовать</button>
+
+            </div>
+
+        }
+
+    }
+    else
+    {
+        <div class="card-body">
+            <h5 class="text-muted">Доступ запрещен, вы не авторизированы!</h5>
+        </div>
+    }
+
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+@if (ViewBag.isPublish != null)
+{
+    <script>
+        if (@ViewBag.isPublish.ToString()) {
+            alert("Материал опубликован!");
+        };
+        if (!@ViewBag.isFileLoad.ToString()) {
+            alert("Файлы не загружены!");
+        };
+    </script>
+}
+
+<script>
+    var fields = document.querySelectorAll('[type=file]');
+
+    function updFileList() {
+        $('[for=' + $(this).attr("id") + ']').html(this.value);
+    }
+
+    for (var i = 0; i < fields.length; i++) {
+        fields[i].addEventListener('change', updFileList, false);
+    }
+
+    $("#Marks").keyup(
+        function () {
+            $("#MarksPos").val(getCaretPos(this));
+            FindValue2("/Work/FindValue", getStr(this, "#MarksPos"), 2, "#MarksDropDown", "#Marks");
+        }
+    );
+
+
+</script>

@@ -1,0 +1,93 @@
+.work {
+  padding: 0 20px;
+}
+
+.work .list .item {
+  border-style: none;
+  border-width: 1px;
+  border-color: gray;
+  background-color: #f6ecda;
+  margin: 10px 0;
+}
+
+.work .item .title {
+  height: 40px;
+  background-color: #a26a42;
+  display: flex;
+  align-items: center;
+  transition-duration: 1s;
+}
+
+.work .item .line {
+  padding: 0 10px;
+  font-weight: bold;
+}
+.work .item .line a,
+.work .item .line span {
+  font-weight:normal;
+}
+.work .item .author {
+  height: 30px;
+  display: flex;
+  align-items: center;
+}
+
+.work .item .line.marks {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+
+.work .item .description {
+  border-width: 1px;
+  border-style: dashed none none none;
+  border-color: #d8c9ad;
+  margin-top: 8px;
+  padding: 4px 10px;
+  font-weight: normal;
+  text-align: justify;
+}
+
+.work .files {
+  height: 100%;
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.work .files .file {
+  font-weight: normal;
+  margin: 0 4px;
+}
+
+/* public */
+.work.editor .line {
+  padding: 4px 10px;
+}
+
+.work .title input {
+  width: 100%;
+  color: white;
+  background-color: #a26a42;
+  font-family: "Verdana", sans-serif;
+  outline: none;
+  border-style: none;
+  transition-duration: 0.3s;
+  text-align: center;
+}
+
+/* reading */
+.work.read .line.title {
+  display: flex;
+  justify-content: space-between;
+}
+.work.read .line.title div {
+  margin: 0;
+  color: white;
+}
+
+.work.read .title .raiting {
+  display: flex;
+  justify-content: space-between;
+}

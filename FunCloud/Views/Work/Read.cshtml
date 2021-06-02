@@ -1,0 +1,32 @@
+﻿@using FunCloud.Helpers
+
+@using DataBaseConnector.Ext
+
+@{FunCloud.View.WorkView Item = this.ViewBag.Item;}
+
+@{
+    ViewBag.Title = $"{Item.Title}. Страница {ViewBag.Page + 1} из {ViewBag.Pages}";
+}
+
+<h2 class="mb-4">@Item.Title</h2>
+
+<div class="form-horizontal position-relative row">
+
+    <div class="card col" style="min-width: 24rem; margin: 0 12px 12px 0;">
+        <div class="card-body">
+
+            @foreach (String line in ViewBag.Items)
+            {
+                <p class="card-text" style="text-align: justify; text-indent: 25px;">@line</p>
+            }
+
+        </div>
+    </div>
+
+</div>
+
+@{ Html.RenderPartial("_Pagination"); }
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

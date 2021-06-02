@@ -1,0 +1,36 @@
+﻿@model FunCloud.Account.LoginModel
+
+@using FunCloud.Helpers
+
+@{
+    ViewBag.Title = "Регистрация";
+}
+
+<h2 class="mb-4">Регистрация</h2>
+
+<div class="card p-3">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+
+        <div class="form-group">
+            <h5 for="Name">Логин:</h5>
+            <input type="text" class="form-control" id="Name" name="Name" aria-describedby="nameHelp">
+            <small id="nameHelp" class="form-text text-muted">Введите имя пользователя.</small>
+            @Html.ValidationMessageFor(model => model.Name)
+        </div>
+        <div class="form-group">
+            <h5 for="Password">Пароль:</h5>
+            <input type="password" class="form-control" id="Password" name="Password">
+            @Html.ValidationMessageFor(model => model.Password)
+        </div>
+
+        <button type="submit" class="@Buttons.Default">Войти</button>
+
+    }
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

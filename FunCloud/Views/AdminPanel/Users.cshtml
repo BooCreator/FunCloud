@@ -1,0 +1,79 @@
+﻿@model FunCloud.Models.PublicModel.AdminPanel.Table<FunCloud.Account.UserModel>
+
+@using FunCloud.Helpers
+@using DataBaseConnector.Ext
+
+@{
+    ViewBag.Title = "Управление пользователями";
+}
+
+    <h2 class="mb-4">Управление пользователями</h2>
+
+<div class="form-horizontal position-relative ">
+    <div class="card w-100 d-flex flex-wrap" style="margin: 0 0 12px 0;">
+
+        @{ Html.RenderPartial("_AdminMenu"); }
+
+        <div class="card p-3">
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true)
+
+                <table>
+                    <tbody>
+                        <tr>
+                            <th>ИД</th>
+                            <th>Логин</th>
+                            <th>Роль</th>
+                        </tr>
+
+                        @for (int i = 0; i < Model.Items.Count; i++)
+                        {
+                            <tr>
+                                <td>
+                                    <p>@Model.Items[i].ID</p>
+                                </td>
+                                <td>
+                                    <div class="btn-group pl-0 pr-0">
+                                        <input type="text" class="form-control" id="Login_@i" aria-describedby="nameHelp" value="@Model.Items[i].Login">
+                                        @Html.CreateButton("<i class='far fa-user'></i>", $"/Profile/View/{ Model.Items[i].ID }", Buttons.Default + " m-0")
+                                        @Html.CreateButton("<i class='far fa-save'></i>", $"javascript:post_data('/AdminPanel/Users/', {Model.Items[i].ID}, 'Login_{i}')", Buttons.Default + " m-0")
+                                    </div>
+                                </td>
+                                <td style="max-width: 240px;">
+                                    <div class="btn-group pl-0 pr-0">
+                                        @Html.DropDownList($"Role_{i}", ViewBag.Roles as List<Typle>, Model.Items[i].Role)
+                                        @Html.CreateButton("<i class='far fa-save'></i>", $"javascript:post_data('/AdminPanel/UsersRole/', {Model.Items[i].ID}, 'Role_{i}')", Buttons.Default + " m-0")
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<script>
+    function post_data_work(action, item_id, elem_id) {
+        var value = $("#Title_" + elem_id).val();
+        var categ = $("#Category_" + elem_id).val();
+        var fandm = $("#Fandome_" + elem_id).val();
+        $.post(action, { id: item_id, title: value, category: categ, fandome: fandm }).done(
+            function (data) {
+                if (data == "ok") {
+                    location.reload();
+                } else {
+                    msg(data);
+                }
+            });
+    }
+</script>

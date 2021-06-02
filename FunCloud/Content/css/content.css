@@ -1,0 +1,11 @@
+.content {
+  width: 100%;
+  min-height: 400px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  margin: 20px auto 20px auto;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  padding-bottom: 40px;
+}

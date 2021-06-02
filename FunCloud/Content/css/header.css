@@ -1,0 +1,40 @@
+header {
+  width: 100%;
+  height: 40px;
+  background-color: #8b4513;
+  position: fixed;
+  z-index: 1;
+}
+
+header .page {
+  display: flex;
+  justify-content: space-between;
+}
+
+
+/* text */
+header .page p,
+header .page a {
+  color: white;
+}
+
+header .page a:hover {
+  background-color: #a26a42;
+}
+
+header .box a {
+  padding: 0 12px;
+}
+
+header .box a.logout {
+  padding: 0 4px 0 8px;
+}
+
+/* блок-разделитель */
+/* используется для невидимой замены header'a, 
+  чтобы контент не накладывался друг на друга.
+  splitter.height должен быть равен header.height*/
+.page.splitter {
+  height: 40px;
+  width: 100%;
+}

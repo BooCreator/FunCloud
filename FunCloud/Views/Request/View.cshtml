@@ -1,0 +1,53 @@
+﻿@using FunCloud.Helpers
+
+@{
+    ViewBag.Title = "Обзор заявки";
+    int UserID = this.ViewBag.UserID;
+    int UserRole = this.ViewBag.UserRole;
+}
+
+<h2 class="mb-4">Обзор заявки</h2>
+
+<div class="form-horizontal position-relative ">
+
+    @{FunCloud.View.RequestView Item = this.ViewBag.Item;}
+    @if (Item != null)
+    {
+        <div class="card mx-auto" style="width: 100%; margin: 0 0 12px 0;">
+            @if (UserID > -1)
+            {
+                <div class="btn-group d-inline-block p-1 m-0 mb-2 w-100 bg-red br-tl br-tr o-dashed" role="toolbar">
+
+                    @if (Item.Author.Value == UserID || UserRole == Global.AdminRoleID)
+                    {
+                        @Html.CreateButton("Работы по заявке", $"/Work/Find?request={Item.ID}", Buttons.Red + " m-0")
+                        @Html.CreateButton("Опубликовать работу", $"/Work/Public?Request={Item.ID}", Buttons.Red + " m-0")
+                        @Html.CreateButton("<i class='far fa-edit'></i>", $"/Request/Edit/{Item.ID}", Buttons.Red + " m-0")
+                        @Html.CreateButton("<i class='far fa-trash-alt'></i>", $"javascript:post('/Request/Remove/',{Item.ID})", Buttons.Red + " m-0")
+                    }
+                    else
+                    {
+                        @Html.CreateButton("Работы по заявке", $"/Work/Find?request={Item.ID}", Buttons.Red + " m-0")
+                        @Html.CreateButton("Опубликовать работу", $"/Work/Public?Request={Item.ID}", Buttons.Red + " m-0")
+                    }
+                </div>
+            }
+            <div class="card-body">
+                <h3 class="card-title">@Item.Title</h3>
+                <h6 class="card-subtitle mb-2 text-muted">Автор: @Html.ActionLink(@Item.Author.Name, "View", "Profile", new { id = Item.Author.Value }, null)</h6>
+                <h6 class="card-subtitle mb-2 text-muted">Категория: @Html.ActionLink(@Item.Category.Name, "Find", "Request", new { category = Item.Category.Value }, null)</h6>
+                <h6 class="card-subtitle mb-2 text-muted">Фэндом: @Html.ActionLink(@Item.Fandome.Name, "Find", "Request", new { fandome = Item.Fandome.Value }, null)</h6>
+                <p class="card-text">@Item.Description</p>
+            </div>
+        </div>
+    }
+    else
+    {
+        <p>Заявка не найдена!</p>
+    }
+
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

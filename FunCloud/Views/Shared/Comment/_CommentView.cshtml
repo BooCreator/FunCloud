@@ -1,0 +1,96 @@
+﻿@model IEnumerable<FunCloud.View.CommentView>
+
+@using FunCloud.Helpers
+
+@{
+    int UserID = this.ViewBag.UserID;
+    int UserRole = this.ViewBag.UserRole;
+}
+
+@foreach (FunCloud.View.CommentView Item in Model)
+{
+
+    <div class="card border" style="width: 100%; margin-bottom: 12px;">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="card-title">@Html.ActionLink(@Item.Author.Name, "View", "Profile", new { id = Item.Author.Value }, null)</h5>
+                <h6 class="card-subtitle mb-2 text-muted">@Item.Pub_date</h6>
+            </div>
+            <p class="card-text">@Item.Text</p>
+            @if (UserID > -1)
+            {
+                <div class="btn-group p-2 m-2" role="toolbar">
+                    @if (Item.Author.Value == UserID || UserRole == Global.AdminRoleID)
+                    {
+                        <div class="btn-group">
+                            <button class="@Buttons.Default m-0" id="addComment_@Item.ID" data-target="addCommentDD_@Item.ID" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Ответить
+                            </button>
+                            <div class="dropdown-menu" id="addCommentDD_@Item.ID" style="min-width: 240px;">
+                                @using (Html.BeginForm("Add", "Comment", FormMethod.Post, new { id = "comment_add_" + Item.ID }))
+                                {
+                                    @Html.Hidden("Work", Item.Work)
+                                    @Html.Hidden("Author", UserID)
+                                    @Html.Hidden("Answer", Item.ID)
+                                    <div class="d-flex align-items-center" style="flex-direction: row; margin-left: 6px;">
+                                        <input type="text" class="form-control" name="Text" aria-describedby="nameText">
+                                        @Html.CreateButton("<i class='fas fa-share'></i>", $"javascript:post_form('/Comment/Public/', 'comment_add_{Item.ID}')")
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <div class="btn-group">
+                            <button class="@Buttons.Default m-0" id="edtComment_@Item.ID" data-target="edtCommentDD_@Item.ID" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class='fas fa-edit'></i>
+                            </button>
+                            <div class="dropdown-menu" id="edtCommentDD_@Item.ID" style="min-width: 240px;">
+                                @using (Html.BeginForm("Edit", "Comment", FormMethod.Post, new { id = "comment_edt_" + Item.ID }))
+                                {
+                                    @Html.Hidden("ID", Item.ID)
+                                    @Html.Hidden("Work", Item.Work)
+                                    @Html.Hidden("Author", UserID)
+                                    @Html.Hidden("Answer", Item.Answer)
+                                    <div class="d-flex align-items-center" style="flex-direction: row; margin-left: 6px;">
+                                        <input type="text" class="form-control" name="Text" aria-describedby="nameText" value="@Item.Text">
+                                        @Html.CreateButton("<i class='fas fa-share'></i>", $"javascript:post_form('/Comment/Edit/', 'comment_edt_{Item.ID}')")
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        
+                        @Html.CreateButton("<i class='fas fa-trash-alt'></i>", $"javascript:post('/Comment/Remove/',{Item.ID})", Buttons.Default + " m-0")
+                    }
+                    else
+                    {
+                        <button class="@Buttons.Default m-0" id="addCommentDropDown_@Item.ID" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Ответить
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="addCommentDropDown_@Item.ID">
+                            @using (Html.BeginForm("Add", "Comment", FormMethod.Post, new { id = "comment_add_" + Item.ID }))
+                            {
+                                @Html.Hidden("Work", Item.Work)
+                                @Html.Hidden("Author", UserID)
+                                @Html.Hidden("Answer", Item.ID)
+                                <div class="d-flex align-items-center" style="flex-direction: row; margin-left: 6px;">
+                                    <input type="text" class="form-control" name="Text" aria-describedby="nameText">
+                                    @Html.CreateButton("<i class='fas fa-share'></i>", $"javascript:post_form('/Comment/Public/', 'comment_add_{Item.ID}')")
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+            <div class="submissive">
+                @{
+                    List<FunCloud.View.CommentView> Items = Item.Answer;
+                    if (Items.Count > 0)
+                    {
+                        Html.RenderPartial("Comment/_CommentView", Items);
+                    }
+                }
+            </div>
+
+        </div>
+    </div>
+
+}

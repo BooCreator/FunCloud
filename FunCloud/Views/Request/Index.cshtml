@@ -1,0 +1,61 @@
+﻿@using FunCloud.Helpers
+
+@{
+    ViewBag.Title = "Список заявок";
+    int UserID = this.ViewBag.UserID;
+    int UserRole = this.ViewBag.UserRole;
+
+}
+
+<h2 class="mb-4">Список заявок</h2>
+
+<div class="card pb-3">
+    <div class="btn-group d-inline-block p-1 m-0 mb-2 w-100 bg-red br-tl br-tr o-dashed" role="toolbar">
+        @Html.CreateButton("<i class='fas fa-feather-alt'></i> Оставить заявку", $"/Request/Public/", Buttons.Red + " m-0")
+        @Html.CreateButton("<i class='fas fa-search'></i> Открыть поиск", $"/Request/Find/", Buttons.Red + " m-0")
+    </div>
+
+    <div class="form-horizontal position-relative">
+
+        @foreach (FunCloud.View.RequestView Item in this.ViewBag.Items)
+        {
+
+            <div class="card col border-bottom" style="min-width: 20rem; margin: 0 12px 12px 0;">
+                <div class="card-body">
+                    <h3 class="card-title">@Html.ActionLink(@Item.Title, "View", "Request", new { id = Item.ID }, null)</h3>
+                    <h6 class="card-subtitle mb-2 text-muted">Автор: @Html.ActionLink(@Item.Author.Name, "View", "Profile", new { id = Item.Author.Value }, null)</h6>
+                    <h6 class="card-subtitle mb-2 text-muted">Категория: @Html.ActionLink(@Item.Category.Name, "Find", "Request", new { category = Item.Category.Value }, null)</h6>
+                    <h6 class="card-subtitle mb-2 text-muted">Фэндом: @Html.ActionLink(@Item.Fandome.Name, "Find", "Request", new { fandome = Item.Fandome.Value }, null)</h6>
+                    <p class="card-text">@Item.Description</p>
+                </div>
+                @if (UserID > -1)
+                {
+                    <div class="btn-group d-inline-block p-2 m-2 w-100" role="toolbar">
+
+                        @if (Item.Author.Value == UserID || UserRole == Global.AdminRoleID)
+                        {
+                            @Html.CreateButton("Работы по заявке", $"/Work/Find?request={Item.ID}", Buttons.Default + " m-0")
+                            @Html.CreateButton("<i class='fas fa-feather-alt'></i>", $"/Work/Public?Request={Item.ID}", Buttons.Default + " m-0")
+                            @Html.CreateButton("<i class='far fa-edit'></i>", $"/Request/Edit/{Item.ID}", Buttons.Default + " m-0")
+                            @Html.CreateButton("<i class='far fa-trash-alt'></i>", $"javascript:post('/Request/Remove/',{Item.ID})", Buttons.Default + " m-0")
+                        }
+                        else
+                        {
+                            @Html.CreateButton("Работы по заявке", $"/Work/Find?request={Item.ID}", Buttons.Default + " m-0")
+                            @Html.CreateButton("<i class='fas fa-feather-alt'></i>", $"/Work/Public?Request={Item.ID}", Buttons.Default + " m-0")
+                        }
+                    </div>
+                }
+            </div>
+
+        }
+    </div>
+
+    @{ Html.RenderPartial("_Pagination"); }
+
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
